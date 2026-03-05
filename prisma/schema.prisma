@@ -7,8 +7,8 @@
 // @See http://prisma.io/docs/prisma-orm/quickstart/postgresql
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
