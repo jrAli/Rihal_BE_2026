@@ -6,6 +6,10 @@
 
 // @See http://prisma.io/docs/prisma-orm/quickstart/postgresql
 
+// To run migration after changes
+// npx prisma migrate dev --name update-schema
+
+
 generator client {
   provider = "prisma-client-js"
   // output   = "../src/generated/prisma"
@@ -15,112 +19,138 @@ datasource db {
   provider = "postgresql"
 }
 
+model staffServiceType {
+  id                String        @id @default(uuid())
+  staffID           String
+  staff             Staff         @relation(fields: [staffID], references: [id])
+  ServiceTypeID     String
+  serviceType       ServiceType   @relation(fields: [ServiceTypeID], references: [id])
+  assignedAt        DateTime      @default(now())  
+}
+
 // Entity used for soft deletion configuration
 model config {
-  id            String @id @default(uuid())
-  key           String @unique
-  value         String
+  id                String        @id @default(uuid())
+  key               String        @unique
+  value             String
 }
 model Appointment {
-  id            String        @id @default(uuid())
-  customerID    String   
-  customer      Customer      @relation(fields: [customerID], references: [id])
-  staffID       String?
-  staff         Staff?        @relation(fields: [staffID], references: [id])
-  slotID        String        @unique
-  slot          Slot          @relation(fields: [slotID], references: [id])
+  id                String        @id @default(uuid())
+  customerID        String   
+  customer          Customer      @relation(fields: [customerID], references: [id])
+  staffID           String?
+  staff             Staff?        @relation(fields: [staffID], references: [id])
+  slotID            String        @unique
+  slot              Slot          @relation(fields: [slotID], references: [id])
   
   // (e.g., checked-in, no-show, completed)
-  status        String
-  notes         String?
-  createdAt     DateTime     
-  updateAt      DateTime
-  branchID      String
-  branch        Branch        @relation(fields: [branchID], references: [id])
+  status            String
+  notes             String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  branchID          String
+  branch            Branch        @relation(fields: [branchID], references: [id])
+
+  attachPath        String?
 }
 
 model ServiceType {
-  id            String        @id @default(uuid())
-  name          String    
-  branchID      String
-  branch        Branch        @relation(fields: [branchID], references: [id])
-  createdAt     DateTime
+  id                String        @id @default(uuid())
+  name              String    
+  branchID          String
+  branch            Branch        @relation(fields: [branchID], references: [id])
+  createdAt         DateTime      @default(now())
+
+  description       String
+  durationMin       Int
+  isActive          Boolean
 
   // back-reference
-  slots         Slot[]
+  slots             Slot[]
+  staffServiceTypes staffServiceType[]
 }
 
 model Slot {
-  id            String        @id @default(uuid())
-  branchID      String
-  branch        Branch        @relation(fields: [branchID], references: [id])
-  serviceIDType String
-  serviceType   ServiceType   @relation(fields: [serviceIDType], references: [id])
-  staffID       String?
-  staff         Staff?        @relation(fields: [staffID], references: [id])
-  startTime     DateTime      
-  endTime       DateTime
-  isAvailable   Boolean 
-  deleteAt      DateTime?
-  createdAt     DateTime
+  id                String        @id @default(uuid())
+  branchID          String
+  branch            Branch        @relation(fields: [branchID], references: [id])
+  serviceIDType     String
+  serviceType       ServiceType   @relation(fields: [serviceIDType], references: [id])
+  staffID           String?
+  staff             Staff?        @relation(fields: [staffID], references: [id])
+  startTime         DateTime      
+  endTime           DateTime
+  isAvailable       Boolean 
+  deleteAt          DateTime?
+  createdAt         DateTime      @default(now())
 
   // back-reference
-  appointment   Appointment?  // optional, one-to-one relationship
+  appointment       Appointment?  // optional, one-to-one relationship
 }
 
 model Customer {
-  id            String        @id @default(uuid())
-  name          String
-  email         String        @unique
-  password      String        
-  idImagePath   String
-  createdAt     DateTime
+  id                String        @id @default(uuid())
+  username          String        @unique
+  name              String
+  phone             String
+  email             String        @unique
+  password          String        
+  idImagePath       String
+  createdAt         DateTime      @default(now())
+  isActive          Boolean
 
   // back-reference
-  appointments  Appointment[]
+  appointments      Appointment[]
 }
 
 model Staff {
-  id            String        @id @default(uuid())
-  name          String        
-  email         String        @unique
-  password      String        
-  role          String        //..
-  branchID      String?       // Optional since admin doesn't have branch id
-  branch        Branch?       @relation(fields: [branchID], references: [id])
+  id                String        @id @default(uuid())
+  username          String        @unique
+  name              String        
+  email             String        @unique
+  password          String        
+  role              String        //..
+  branchID          String?       // Optional since admin doesn't have branch id
+  branch            Branch?       @relation(fields: [branchID], references: [id])
+  isActive          Boolean
 
   // back-reference
-  slots         Slot[]
-  appointments  Appointment[]
-  auditLogs     AuditLog[]
+  slots             Slot[]
+  appointments      Appointment[]
+  auditLogs         AuditLog[]
+  staffServiceType  staffServiceType[]
 }
 
 model Branch {
-  id            String        @id @default(uuid())
-  name          String
-  createdAt     DateTime
-  location      String
+  id                String        @id @default(uuid())
+  name              String
+  createdAt         DateTime      @default(now())
+
+  city              String
+  address           String
+  timezone          String
+  isActive          Boolean  
 
   // back-references
-  serviceType   ServiceType[]
-  slots         Slot[]
-  staff         Staff[]
-  appointments  Appointment[]
-  auditLogs     AuditLog[]
+  serviceType       ServiceType[]
+  slots             Slot[]
+  staff             Staff[]
+  appointments      Appointment[]
+  auditLogs         AuditLog[]
 }
 
 model AuditLog {
-  id            String        @id @default(uuid())
-  actorID       String
-  actor         Staff         @relation(fields: [actorID], references: [id])
-  actorRole     String        
-  action        String
-  targetType    String
-  targetID      String        
-  branchID      String
-  branch        Branch        @relation(fields: [branchID], references: [id])
-  metadata      String?
-  createdAt     DateTime
+  id                String        @id @default(uuid())
+  actorID           String
+  actor             Staff         @relation(fields: [actorID], references: [id])
+  actorRole         String        
+  action            String
+  targetType        String
+  targetID          String        
+  branchID          String?
+  branch            Branch?       @relation(fields: [branchID], references: [id])
+  metadata          Json?
+  createdAt         DateTime      @default(now())
 }
 
 
