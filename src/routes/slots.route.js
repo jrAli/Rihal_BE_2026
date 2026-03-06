@@ -1,8 +1,9 @@
-// import express from 'express';
+import express from 'express';
+import {listSlots} from '../controllers/slots.controller.js';
 
-// const slotRouter = express.Router();
+const slotRouter = express.Router();
 
-// slotRouter.get('/', listAllSlots);
+slotRouter.get('/', listSlots);
 
-// export default slotRouter;
+export default slotRouter;
 
