@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaPg } from '@prisma/adapter-pg';
 import seedData from './example.json' with {type: 'json'}; // importing seed from the example.json
 import bcrypt from 'bcrypt';
 
 // Must use adapter when initilizing prisma, according to prisma v7
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL, ssl: true })
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL, ssl: false }) // ssl set to false when hosting localy
 const prisma = new PrismaClient({ adapter })
 
 const HASHING_SALT = 12;
@@ -129,7 +129,7 @@ async function main(){
         email:            e.email,
         password:         await bcrypt.hash(e.password, HASHING_SALT), // encrpt password
         phone:            e.phone,
-        idImagePath:      'placeholder.jpg',
+        idImagePath:      IMAGE_PLACE_HOLDER,
         isActive:         e.is_active
       }
     })
