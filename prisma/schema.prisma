@@ -86,7 +86,7 @@ model Customer {
   password     String
   idImagePath  String
   createdAt    DateTime      @default(now())
-  isActive     Boolean
+  isActive     Boolean       @default(true)
   phone        String
   username     String        @unique
   appointments Appointment[]
