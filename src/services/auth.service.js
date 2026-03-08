@@ -45,18 +45,16 @@ export const registerCustomerService = async (form) => {
 export const loginUserService = async ({email, password}) => {
   // Check if user exist using email
   let user = await prisma.customer.findUnique({
-    where: {email: email},
-    select: {password: true, role: true},
+    where: { email },
+    select: { id: true, password: true, role: true }
   });
 
-  // if user not exist in customer entity then check staff entity 
-  if (!user){
-    user = await prisma.customer.findUnique({
-      where: {email: email},
-      select: {id: true, password: true, role: true},
-    })
+  if (!user) {
+    user = await prisma.staff.findUnique({
+      where: { email },
+      select: { id: true, password: true, role: true, branchID: true }
+    });
   }
-
   if (!user) throw new Error("Invalid Credentials");
   
   // Check password
@@ -65,7 +63,7 @@ export const loginUserService = async ({email, password}) => {
 
   // Generate JWT authorization token synchronously (assumptions: login process is fast) 
   const token = jwt.sign(
-    {userID: user.id, role: user.role}, // payload
+    {id: user.id, role: user.role}, // payload
     process.env.JWT_SECRET,
     {expiresIn: '7d'},
   );
