@@ -1,11 +1,11 @@
 
 /**
- * middleware to validate 
+ * Middleware to validate registeration.
  *  1. presence all required fields are entered
  *  2. email format using basic regix
  *  3. password length (minimum 8 character)
 */
-export const validateLoginCredentials = (req, res, next) => { 
+export const validateRegisterationForm = (req, res, next) => { 
   
   const {full_name, password, email, phone, username} = req.body;
 
@@ -26,3 +26,13 @@ export const validateLoginCredentials = (req, res, next) => {
 
   next();
 }
+
+export const validateLogin = (req, res, next) => {
+
+  const {email, password} = req.body;
+
+  if (!email) return res.status(400).json({error: "Email is required!"});
+  if (!password) return res.status(400).json({error: "Password is required!"});
+
+  next();
+};

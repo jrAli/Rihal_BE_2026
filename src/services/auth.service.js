@@ -1,10 +1,11 @@
 import prisma from '../db/prisma.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 // register 
 export const registerCustomerService = async (form) => {
   // check if user exist in database using email as constraint
-  console.log("Debug: ", form);
 
   const {email, full_name, password, phone, username, id_image} = form; 
 
@@ -13,7 +14,7 @@ export const registerCustomerService = async (form) => {
   });
 
   const usernameExist = await prisma.customer.findUnique({
-    where: {username: username}
+    where: {username: username},
   });
 
   if (emailExist) throw new Error("Registeration Error: User already exist!");
@@ -38,4 +39,36 @@ export const registerCustomerService = async (form) => {
     username: username
   }}; 
   return ack;
+};
+
+// Login user then returns jwt authorization token
+export const loginUserService = async ({email, password}) => {
+  // Check if user exist using email
+  let user = await prisma.customer.findUnique({
+    where: {email: email},
+    select: {password: true, role: true},
+  });
+
+  // if user not exist in customer entity then check staff entity 
+  if (!user){
+    user = await prisma.customer.findUnique({
+      where: {email: email},
+      select: {id: true, password: true, role: true},
+    })
+  }
+
+  if (!user) throw new Error("Invalid Credentials");
+  
+  // Check password
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) throw new Error("Invalid Credentials");
+
+  // Generate JWT authorization token synchronously (assumptions: login process is fast) 
+  const token = jwt.sign(
+    {userID: user.id, role: user.role}, // payload
+    process.env.JWT_SECRET,
+    {expiresIn: '7d'},
+  );
+
+  return {token};
 };
