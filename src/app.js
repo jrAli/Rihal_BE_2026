@@ -5,6 +5,7 @@ import multer from 'multer'; // middleware used to handle form-date
 import branchesRouter from './routes/branches.route.js';
 import slotRouter from './routes/slots.route.js';
 import authRouter from './routes/auth.route.js';
+import appointmentRouter from './routes/appointment.route.js';
 
 const app = express();
 const upload = multer({dest: 'uploads/'}); // stores the file 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({extended: true}));
 app.use('/api/branches', branchesRouter);
 app.use('/api/slots', slotRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/appointments', appointmentRouter);
 
 // it is Used to check status of the backend server.
 app.get('/health', (req, res)=>{
