@@ -89,6 +89,7 @@ model Customer {
   isActive     Boolean       @default(true)
   phone        String
   username     String        @unique
+  role         String        @default("CUSTOMER")
   appointments Appointment[]
 }
 
