@@ -7,7 +7,6 @@
 */
 export const validateLoginCredentials = (req, res, next) => { 
   
-  // TODO add id_image
   const {full_name, password, email, phone, username} = req.body;
 
   // Check for presence 
@@ -16,6 +15,7 @@ export const validateLoginCredentials = (req, res, next) => {
   if (!email) return res.status(400).json({error: "Email is required!"});
   if (!phone) return res.status(400).json({error: "Phone is required!"});
   if (!username) return res.status(400).json({error: "Username is required!"});
+  if (!req.file) return res.status(400).json({error: "Image id picture is required!"});
 
   // check email format 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // email regex

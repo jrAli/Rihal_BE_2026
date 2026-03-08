@@ -4,17 +4,20 @@ import bcrypt from 'bcrypt';
 // register 
 export const registerCustomerService = async (form) => {
   // check if user exist in database using email as constraint
-  // TODO extract idimagepath for database
-  const {email, full_name, password, phone, username} = form; 
-  const temp_idImagePath = "placeholder.jpg";
+  console.log("Debug: ", form);
 
-  console.log("checking email: ", email);
+  const {email, full_name, password, phone, username, id_image} = form; 
 
-  const userExist = await prisma.customer.findUnique({
+  const emailExist = await prisma.customer.findUnique({
     where: {email: email},
   });
 
-  if (userExist) throw new Error("Registeration Error: User already exist!");
+  const usernameExist = await prisma.customer.findUnique({
+    where: {username: username}
+  });
+
+  if (emailExist) throw new Error("Registeration Error: User already exist!");
+  if (usernameExist) throw new Error("Registeration Error: username taken, please choose other username!");
 
   // store validated user on database
   const customer = await prisma.customer.create({
@@ -24,7 +27,7 @@ export const registerCustomerService = async (form) => {
       password: await bcrypt.hash(password, 12),
       phone: phone,
       username: username,
-      idImagePath: temp_idImagePath
+      idImagePath: id_image
     }
   });
 
