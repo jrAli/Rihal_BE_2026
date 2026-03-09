@@ -78,3 +78,7 @@ export const getAppointmentByIdService = async (appointment_id, customer_id) => 
   if (!appointment) throw new Error("Appointment not found!");
   return appointment;
 };
+
+export const bookAppointmentService = async (slotID, customerID, attachPath) => {
+
+};

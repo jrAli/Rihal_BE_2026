@@ -1,4 +1,4 @@
-import { getAppointmentsService, getAppointmentByIdService } from '../services/appointment.service.js';
+import { getAppointmentsService, getAppointmentByIdService, bookAppointmentService } from '../services/appointment.service.js';
 
 export const getCustomerAppointments = async (req, res) => {
   try{
@@ -14,6 +14,18 @@ export const getAppointmentsByID = async (req, res) => {
     const { appt_id } = req.params; // extract id from /:id
     const appointmentByID = await getAppointmentByIdService(appt_id, req.user.id);
     res.json({appointment: appointmentByID});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const bookAppointment = async (req, res) => {
+  try{
+    const {slotID} = req.body;
+    const {customerID} = req.user.id;
+    const {attachPath} = req.file?.path; // optional file
+    const appointment = await bookAppointmentService(slotID, customerID, attachPath);
+    res.json({booked: appointment}); 
   }catch(error){
     res.status(400).json({error: error.message});
   }
