@@ -14,9 +14,24 @@ const storage = multer.diskStorage({
   }
 });
 
+const attachmentStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/attachments/'); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
 // Checks file format  
 const fileFilter = (req, file, cb) => {
   const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error(` ${file.mimetype} is unsupported format try uploading jpeg, png or webp`));
+}
+
+const attachmentFilter = (req, file, cb) => {
+  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
   if (allowed.includes(file.mimetype)) cb(null, true);
   else cb(new Error(` ${file.mimetype} is unsupported format try uploading jpeg, png or webp`));
 }
@@ -27,3 +42,8 @@ export const uploadImage = multer({
   limits: {fileSize: $5MB}
 });
 
+export const uploadAttachment = multer({
+  storage: attachmentStorage,
+  fileFilter: attachmentFilter,
+  limits: { fileSize: $5MB }
+});

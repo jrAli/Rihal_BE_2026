@@ -1,4 +1,5 @@
 import { getAppointmentsService, getAppointmentByIdService, bookAppointmentService } from '../services/appointment.service.js';
+import fs from 'fs';
 
 export const getCustomerAppointments = async (req, res) => {
   try{
@@ -22,11 +23,12 @@ export const getAppointmentsByID = async (req, res) => {
 export const bookAppointment = async (req, res) => {
   try{
     const {slotID} = req.body;
-    const {customerID} = req.user.id;
-    const {attachPath} = req.file?.path; // optional file
+    const customerID = req.user.id;
+    const attachPath = req.file?.path; // optional file
     const appointment = await bookAppointmentService(slotID, customerID, attachPath);
     res.json({booked: appointment}); 
   }catch(error){
+    if (req.file?.path) fs.unlink(req.file.path, ()=>{}); // delete uploaded files if there was an error
     res.status(400).json({error: error.message});
   }
 };
