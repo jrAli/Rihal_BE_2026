@@ -6,6 +6,7 @@ import branchesRouter from './routes/branches.route.js';
 import slotRouter from './routes/slots.route.js';
 import authRouter from './routes/auth.route.js';
 import appointmentRouter from './routes/appointment.route.js';
+import manageRouter from './routes/manage.route.js';
 
 const app = express();
 const upload = multer({dest: 'uploads/'}); // stores the file 
@@ -18,6 +19,7 @@ app.use('/api/branches', branchesRouter);
 app.use('/api/slots', slotRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/appointments', appointmentRouter);
+app.use('/api/manage', manageRouter);
 
 // Error handling for multer
 app.use((err, req, res, next)=>{

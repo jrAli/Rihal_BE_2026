@@ -1,7 +1,7 @@
 import express from 'express';
 import { getAppointmentsByID, listAppointments, 
          bookAppointment, cancelAppointments, 
-         rescheduleAppointments} from '../controllers/appointment.controller.js'; 
+         rescheduleAppointments, changeAppointmentStatus } from '../controllers/appointment.controller.js'; 
 import { authorize } from '../middlewares/authorize.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { uploadAttachment  } from '../middlewares/upload.js';
@@ -15,8 +15,6 @@ appointmentRouter.post('/', authenticate, authorize('CUSTOMER'), uploadAttachmen
 appointmentRouter.get('/:appt_id', authenticate, authorize('CUSTOMER'), getAppointmentsByID); // in this context it's appointment's id
 appointmentRouter.delete('/:appt_id', authenticate, authorize('CUSTOMER'), cancelAppointments);
 appointmentRouter.patch('/:appt_id/reschedule', uploader, authenticate, authorize('CUSTOMER'), rescheduleAppointments);
+appointmentRouter.patch('/:appt_id/status', uploader, authenticate, authorize('ADMIN', 'BRANCH_MANAGER', 'STAFF'), changeAppointmentStatus);
 
 export default appointmentRouter;
-
-
-

@@ -244,7 +244,7 @@ export const cancelAppointmentsService  = async (userID, appointment_id) => {
     message: 'Appointment cancelled successfully',
     appointment_id: appointment_id,
     status: 'CANCELLED'
-  }
+  };
 };
 
 export const rescheduleAppointmentsService = async (userID, appointmentID, newSlotID) => {
@@ -263,7 +263,6 @@ export const rescheduleAppointmentsService = async (userID, appointmentID, newSl
   // check if slot is not deleted (soft deleted)
   if (!newSlot) throw new Error("Slot not found");
   if (newSlot.deleteAt) throw new Error("Slot not available");
-  // if (!newSlot.isAvailable) throw new Error("Slot is already booked");
 
   // check slot capacity
   const appointmentCount  = await prisma.appointment.count({
@@ -287,5 +286,48 @@ export const rescheduleAppointmentsService = async (userID, appointmentID, newSl
     message: 'Appointment rescheduled successfully!',
     appointmentID,
     newSlotID: newSlotID
+  };
+};
+
+export const changeAppointmentStatusService = async (userID, role, appointmentID, newStatus) => {
+  // check if allowed status
+  const allowedStatuses = ["CHECK_IN", "NO_SHOW", "COMPLETED"];
+  if (!allowedStatuses.includes(newStatus)) throw new Error("Invalid status");
+
+  // find appointment based on role
+  let appointment = null;
+
+  if (role === 'ADMIN'){
+    appointment = await prisma.appointment.findFirst({
+      where: {id: appointmentID},
+    });
   }
+
+  else if (role === 'BRANCH_MANAGER'){
+    const manager = await prisma.staff.findUnique({
+      where: {id: userID},
+      select: {branchID: true},
+    });
+    appointment = await prisma.appointment.findFirst({
+      where: {id: appointmentID, branchID: manager.branchID},
+    });
+  }
+
+  else if (role === 'STAFF'){
+    appointment = await prisma.appointment.findFirst({
+      where: {id: appointmentID, staffID: userID},
+    });
+  }
+
+  if (!appointment) throw new Error("Appointment not found or unauthorized!");
+
+  const status = await prisma.appointment.update({
+    where: {id: appointmentID},
+    data: {status: newStatus},
+  });
+
+  return {
+    message: "Successfully changed to status",
+    newStatus: status 
+  };
 };

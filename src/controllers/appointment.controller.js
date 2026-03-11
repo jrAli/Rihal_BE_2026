@@ -1,6 +1,7 @@
+import { ADDRGETNETWORKPARAMS } from 'dns';
 import { getCustomerAppointmentsService, 
          getAppointmentByIdService, 
-         bookAppointmentService, 
+         bookAppointmentService, changeAppointmentStatusService,
          cancelAppointmentsService, rescheduleAppointmentsService,
          getAllAppointmentsService, getBranchAppointmentsService, getAssignedAppointmentsService} from '../services/appointment.service.js';
 import fs from 'fs';
@@ -23,6 +24,7 @@ export const listAppointments = async (req, res) => {
   }
 };
 
+// for customer 
 export const getAppointmentsByID = async (req, res) => {
   try{
     const { appt_id } = req.params; // extract id from /:id
@@ -65,6 +67,18 @@ export const rescheduleAppointments = async (req, res) => {
     console.log(newSlotID)
     const newAppointment = await rescheduleAppointmentsService(userID, appt_id, newSlotID);
     res.json({Scheduled: newAppointment});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const changeAppointmentStatus = async (req, res) => {
+  try{
+    const { appt_id } = req.params;
+    const {id, role} = req.user;
+    const {newStatus} = req.body;
+    const status = await changeAppointmentStatusService(id, role, appt_id, newStatus);
+    res.json({newStatus: status})
   }catch(error){
     res.status(400).json({error: error.message});
   }
