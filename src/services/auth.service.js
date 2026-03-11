@@ -34,6 +34,7 @@ export const registerCustomerService = async (form) => {
 
   // Acknowledge user by sending part of the form 
   const ack = {user: {
+    message: "Customer registered successfully",
     name: full_name,
     email: email,
     username: username

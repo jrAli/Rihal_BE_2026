@@ -26,7 +26,7 @@ export const getAppointmentsService = async (cust_id) => {
           endTime: true
         }
       }
-    }
+    },
   });
   return appointments;
 };
@@ -73,7 +73,7 @@ export const getAppointmentByIdService = async (appointment_id, customer_id) => 
         }
       }
 
-    }
+    },
   });
   if (!appointment) throw new Error("Appointment not found!");
   return appointment;
@@ -92,7 +92,8 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
       serviceIDType: true,
       isAvailable: true,
       deleteAt: true,
-    }
+      capacity: true,
+    },
   });
   
   // Check if slot exist
@@ -101,6 +102,13 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
   // Check if slot is available 
   if (slotInformation.deleteAt) throw new Error("slot not available!");
   if (!slotInformation.isAvailable) throw new Error("Slot not available!");
+
+  const appointmentCount = await prisma.appointment.count({
+    where: {slotID: slotID, status: "BOOKED"},
+  });
+
+  if (appointmentCount >= slotInformation.capacity) 
+    throw new Error("Slot is fully booked");
 
   try{
     const appointmentBook = await prisma.appointment.create({
@@ -114,10 +122,44 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
         status: "BOOKED"
       }
     });
+
+    // update slot's availablity flag
+    await prisma.slot.update({
+      where: {id: slotID},
+      data: {isAvailable: false},
+    });
   
     return appointmentBook;
   }catch(error){
     if (error.code === 'P2002') throw new Error('Slot is already booked'); // catch database error
     throw error;
+  }
+};
+
+export const cancelAppointmentsService  = async (userID, appointment_id) => {
+  // find user appointment that will be delete
+  const isAppointmentExist = await prisma.appointment.findFirst({
+    where: {customerID: userID, id: appointment_id, status: "BOOKED"},
+    select: {slotID: true},
+  }); 
+
+  if (!isAppointmentExist) throw new Error('Appointment not found or already cancelled');
+
+  // delete appointment by updating status to CANCELLED
+  await prisma.appointment.update({
+    where: {id: appointment_id, customerID: userID},
+    data: {status: "CANCELLED"},
+  });
+
+  // update the slot availablity flag
+  await prisma.slot.update({
+    where: {id: isAppointmentExist.slotID},
+    data: {isAvailable: true},
+  });
+
+  return {
+    message: 'Appointment cancelled successfully',
+    appointment_id: appointment_id,
+    status: 'CANCELLED'
   }
 };

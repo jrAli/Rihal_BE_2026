@@ -33,7 +33,7 @@ model Appointment {
   id            String      @id @default(uuid())
   customerID    String
   staffID       String?
-  slotID        String      @unique
+  slotID        String      
   status        String
   notes         String?
   createdAt     DateTime    @default(now())
@@ -73,7 +73,7 @@ model Slot {
   deleteAt      DateTime?
   createdAt     DateTime     @default(now())
   capacity      Int          @default(1)
-  appointment   Appointment?
+  appointment   Appointment[]
   branch        Branch       @relation(fields: [branchID], references: [id])
   serviceType   ServiceType  @relation(fields: [serviceIDType], references: [id])
   staff         Staff?       @relation(fields: [staffID], references: [id])

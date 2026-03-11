@@ -23,6 +23,7 @@ app.use('/api/appointments', appointmentRouter);
 app.use((err, req, res, next)=>{
   if (err instanceof multer.MulterError || err) 
     return res.status(400).json({error: err.message});
+  next();
 });
 
 // it is Used to check status of the backend server.

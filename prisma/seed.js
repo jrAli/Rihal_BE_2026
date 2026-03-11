@@ -169,6 +169,14 @@ async function main(){
         createdAt:        e.created_at
       }
     });
+    
+    // Mark slot unavailable if appointment is booked
+    if (e.status === 'BOOKED'){
+      await prisma.slot.update({
+      where: {id: e.slot_id},
+      data: {isAvailable: false},
+      });
+    }
   }
 
   // AuditLogs
