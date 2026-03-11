@@ -1,12 +1,22 @@
-import { getAppointmentsService, 
+import { getCustomerAppointmentsService, 
          getAppointmentByIdService, 
          bookAppointmentService, 
-         cancelAppointmentsService, rescheduleAppointmentsService } from '../services/appointment.service.js';
+         cancelAppointmentsService, rescheduleAppointmentsService,
+         getAllAppointmentsService, getBranchAppointmentsService, getAssignedAppointmentsService} from '../services/appointment.service.js';
 import fs from 'fs';
 
-export const getCustomerAppointments = async (req, res) => {
+export const listAppointments = async (req, res) => {
   try{
-    const appointments = await getAppointmentsService(req.user.id);
+    const {role} = req.user;
+    let appointments = null;
+    console.log("[Debug] USER: ",  req.user);
+    // based on role
+    console.log(role);
+    if (role === 'ADMIN') appointments = await getAllAppointmentsService();
+    else if (role === 'BRANCH_MANAGER') appointments = await getBranchAppointmentsService(req.user.id);
+    else if (role === 'STAFF') appointments = await getAssignedAppointmentsService(req.user.id);
+    else if (role === 'CUSTOMER') appointments = await getCustomerAppointmentsService(req.user.id); 
+    
     res.json({appointments}); 
   }catch(error){
     res.status(400).json({error: error.message});

@@ -1,4 +1,3 @@
-import { Query } from 'pg';
 import {getSlotByParam} from '../services/slots.services.js';
 
 export const listSlots = async (req, res) => {

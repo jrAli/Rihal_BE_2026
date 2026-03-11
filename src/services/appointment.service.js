@@ -1,7 +1,7 @@
 import prisma from '../db/prisma.js';
 
 // get all customer's appointment
-export const getAppointmentsService = async (cust_id) => {
+export const getCustomerAppointmentsService = async (cust_id) => {
   const appointments = await prisma.appointment.findMany({
     where: { customerID: cust_id },
     select: {
@@ -29,6 +29,101 @@ export const getAppointmentsService = async (cust_id) => {
     },
   });
   return appointments;
+};
+
+// List all the appointments for ADMIN role
+export const getAllAppointmentsService = async () => {
+  const appointment = await prisma.appointment.findMany();
+  return appointment;
+};
+
+// List all the appointments based on branch for BRANCH_MANAGER role
+export const getBranchAppointmentsService = async (managerID) => {
+  // get branchid for manager
+  const manager = await prisma.staff.findFirst({
+    where: {id: managerID},
+    select: {branchID: true},
+  });
+
+  if (!manager) throw new Error("Manager not found!");
+  
+  console.log("[Debug] Manager ID: ", manager.branchID);
+
+  const appointment = await prisma.appointment.findMany({
+    where: {branchID: manager.branchID},
+    select: {
+      id: true,
+      status: true,
+      createdAt: true,
+      branch: {
+        select: {
+          id: true,
+          name: true,
+          address: true
+        }
+      },
+      serviceType: {
+        select: {
+          name: true,
+          durationMin: true
+        }
+      },
+      slot: {
+        select: {
+          startTime: true,
+          endTime: true
+        }
+      },
+      staff: {
+        select: {
+          id: true,
+          email: true, 
+          name: true,
+          role: true
+        }
+      }
+    },
+  });
+  return appointment;
+};
+
+export const getAssignedAppointmentsService = async (staffID) => {
+  const appointment = await prisma.appointment.findMany({
+    where: {staffID: staffID},
+    select: {
+      id: true,
+      status: true,
+      createdAt: true,
+      branch: {
+        select: {
+          id: true,
+          name: true,
+          address: true
+        }
+      },
+      serviceType: {
+        select: {
+          name: true,
+          durationMin: true
+        }
+      },
+      slot: {
+        select: {
+          startTime: true,
+          endTime: true
+        }
+      },
+      staff: {
+        select: {
+          id: true,
+          email: true, 
+          name: true,
+          role: true
+        }
+      }
+    }
+  });
+  return appointment;
 };
 
 export const getAppointmentByIdService = async (appointment_id, customer_id) => {
@@ -122,12 +217,6 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
         status: "BOOKED"
       }
     });
-
-    // update slot's availablity flag
-    // await prisma.slot.update({
-    //   where: {id: slotID},
-    //   data: {isAvailable: false},
-    // });
   
     return appointmentBook;
   }catch(error){
@@ -150,12 +239,6 @@ export const cancelAppointmentsService  = async (userID, appointment_id) => {
     where: {id: appointment_id, customerID: userID},
     data: {status: "CANCELLED"},
   });
-
-  // update the slot availablity flag
-  // await prisma.slot.update({
-  //   where: {id: isAppointmentExist.slotID},
-  //   data: {isAvailable: true},
-  // });
 
   return {
     message: 'Appointment cancelled successfully',
@@ -189,12 +272,6 @@ export const rescheduleAppointmentsService = async (userID, appointmentID, newSl
 
   if (appointmentCount >= newSlot.capacity) throw new Error('Slot is fully booked');
 
-  // free old slot
-  // await prisma.slot.update({
-  //   where: {id: appointment.slotID},
-  //   data: {isAvailable: true}
-  // });
-
   // update appointment with new slot
   await prisma.appointment.update({
     where: {id: appointmentID},
@@ -205,12 +282,6 @@ export const rescheduleAppointmentsService = async (userID, appointmentID, newSl
       serviceTypeID: newSlot.serviceIDType,
     }
   });
-
-  // mark new slot unavailable
-  // await prisma.slot.update({
-  //   where: {id: newSlotID},
-  //   data: {isAvailable: false},
-  // });
 
   return {
     message: 'Appointment rescheduled successfully!',
