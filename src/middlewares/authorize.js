@@ -1,4 +1,3 @@
-
 /**
  * Middleware function used to authorize user.
 */
