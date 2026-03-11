@@ -1,7 +1,7 @@
 import { getAppointmentsService, 
          getAppointmentByIdService, 
          bookAppointmentService, 
-         cancelAppointmentsService } from '../services/appointment.service.js';
+         cancelAppointmentsService, rescheduleAppointmentsService } from '../services/appointment.service.js';
 import fs from 'fs';
 
 export const getCustomerAppointments = async (req, res) => {
@@ -47,3 +47,15 @@ export const cancelAppointments = async (req, res) => {
   }
 };
 
+export const rescheduleAppointments = async (req, res) => {
+  try{
+    const { appt_id } = req.params;
+    const userID = req.user.id;
+    const { newSlotID } = req.body;
+    console.log(newSlotID)
+    const newAppointment = await rescheduleAppointmentsService(userID, appt_id, newSlotID);
+    res.json({Scheduled: newAppointment});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};

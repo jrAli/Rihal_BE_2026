@@ -124,10 +124,10 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
     });
 
     // update slot's availablity flag
-    await prisma.slot.update({
-      where: {id: slotID},
-      data: {isAvailable: false},
-    });
+    // await prisma.slot.update({
+    //   where: {id: slotID},
+    //   data: {isAvailable: false},
+    // });
   
     return appointmentBook;
   }catch(error){
@@ -152,14 +152,69 @@ export const cancelAppointmentsService  = async (userID, appointment_id) => {
   });
 
   // update the slot availablity flag
-  await prisma.slot.update({
-    where: {id: isAppointmentExist.slotID},
-    data: {isAvailable: true},
-  });
+  // await prisma.slot.update({
+  //   where: {id: isAppointmentExist.slotID},
+  //   data: {isAvailable: true},
+  // });
 
   return {
     message: 'Appointment cancelled successfully',
     appointment_id: appointment_id,
     status: 'CANCELLED'
+  }
+};
+
+export const rescheduleAppointmentsService = async (userID, appointmentID, newSlotID) => {
+  // find appointment 
+  const appointment = await prisma.appointment.findFirst({
+    where: {id: appointmentID, customerID: userID, status: "BOOKED"},
+  });
+
+  if (!appointment) throw new Error("Appointment not found or not booked");
+
+  // check if the slot exist and avaible
+  const newSlot = await prisma.slot.findFirst({
+    where: {id: newSlotID},
+  });
+
+  // check if slot is not deleted (soft deleted)
+  if (!newSlot) throw new Error("Slot not found");
+  if (newSlot.deleteAt) throw new Error("Slot not available");
+  // if (!newSlot.isAvailable) throw new Error("Slot is already booked");
+
+  // check slot capacity
+  const appointmentCount  = await prisma.appointment.count({
+    where: {slotID: newSlotID, status: "BOOKED"},
+  });
+
+  if (appointmentCount >= newSlot.capacity) throw new Error('Slot is fully booked');
+
+  // free old slot
+  // await prisma.slot.update({
+  //   where: {id: appointment.slotID},
+  //   data: {isAvailable: true}
+  // });
+
+  // update appointment with new slot
+  await prisma.appointment.update({
+    where: {id: appointmentID},
+    data: {
+      slotID: newSlotID,
+      staffID: newSlot.staffID,
+      branchID: newSlot.branchID,
+      serviceTypeID: newSlot.serviceIDType,
+    }
+  });
+
+  // mark new slot unavailable
+  // await prisma.slot.update({
+  //   where: {id: newSlotID},
+  //   data: {isAvailable: false},
+  // });
+
+  return {
+    message: 'Appointment rescheduled successfully!',
+    appointmentID,
+    newSlotID: newSlotID
   }
 };
