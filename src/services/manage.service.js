@@ -60,7 +60,6 @@ export const getImagePathService = async (customerID) => {
   return imagePath;
 };
 
-
 export const getAttachmentPathService = async (appointmentID, userRole, userID) => {
   // check roles
   if (userRole === 'CUSTOMER'){
@@ -86,4 +85,40 @@ export const getAttachmentPathService = async (appointmentID, userRole, userID) 
   return attachmentPath;
 };
 
+export const getStaffService = async (userID, userRole) => {
+  let staff = null;
+  if (userRole === 'ADMIN'){
+    staff = await prisma.staff.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        username: true,
+        isActive: true
+      },
+    });
+  }
+  else if (userRole === 'BRANCH_MANAGER'){
+    const manager = await prisma.staff.findFirst({
+      where: {id: userID},
+      select: {branchID: true},
+    });  
 
+    staff = await prisma.staff.findMany({
+      where: {branchID: manager.branchID},
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        username: true,
+        isActive: true    
+      },
+    });
+  }
+
+  if (!staff) throw new Error("Unauthorized or staff not found");
+
+  return staff;
+};

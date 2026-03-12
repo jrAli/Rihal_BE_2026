@@ -1,4 +1,4 @@
-import { viewAuditLogService, getImagePathService, getAttachmentPathService } from '../services/manage.service.js';
+import { viewAuditLogService, getImagePathService, getAttachmentPathService, getStaffService } from '../services/manage.service.js';
 
 export const viewAuditLog = async (req, res) => {
   try{
@@ -34,6 +34,16 @@ export const viewAttachement = async (req, res) => {
         if (err) res.status(404).json({error: "Attachment file not found on disk"});
       });
     }
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const listStaff = async (req, res) => {
+  try{
+    const {id, role} = req.user;
+    const staffs = await getStaffService(id, role);
+    res.status(200).json({staff: staffs});
   }catch(error){
     res.status(400).json({error: error.message});
   }
