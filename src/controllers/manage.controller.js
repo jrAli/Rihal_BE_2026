@@ -1,4 +1,6 @@
-import { viewAuditLogService, getImagePathService, getAttachmentPathService, getStaffService } from '../services/manage.service.js';
+import { viewAuditLogService, getImagePathService, 
+         getAttachmentPathService, getStaffService, 
+         getCustomerService } from '../services/manage.service.js';
 
 export const viewAuditLog = async (req, res) => {
   try{
@@ -42,8 +44,17 @@ export const viewAttachement = async (req, res) => {
 export const listStaff = async (req, res) => {
   try{
     const {id, role} = req.user;
-    const staffs = await getStaffService(id, role);
-    res.status(200).json({staff: staffs});
+    const staff = await getStaffService(id, role);
+    res.status(200).json({staff: staff});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const listCustomer = async (req, res) => {
+  try{
+    const customer = await getCustomerService();
+    res.status(200).json({customer: customer});
   }catch(error){
     res.status(400).json({error: error.message});
   }

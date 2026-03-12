@@ -122,3 +122,18 @@ export const getStaffService = async (userID, userRole) => {
 
   return staff;
 };
+
+export const getCustomerService = async () => {
+  const customer = await prisma.customer.findMany({
+    select: {
+      id: true, 
+      name: true,
+      username: true,
+      email: true, 
+      isActive: true, 
+      phone: true,
+    },
+  });
+
+  return customer;
+};
