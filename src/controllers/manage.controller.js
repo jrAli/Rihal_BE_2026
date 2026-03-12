@@ -1,6 +1,6 @@
 import { viewAuditLogService, getImagePathService, 
          getAttachmentPathService, getStaffService, 
-         getCustomerService } from '../services/manage.service.js';
+         getCustomerService, getCustomerByIDService } from '../services/manage.service.js';
 
 export const viewAuditLog = async (req, res) => {
   try{
@@ -54,6 +54,16 @@ export const listStaff = async (req, res) => {
 export const listCustomer = async (req, res) => {
   try{
     const customer = await getCustomerService();
+    res.status(200).json({customer: customer});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const getCustomerByID = async (req, res) => {
+  try{
+    const {customerID} = req.params;
+    const customer = await getCustomerByIDService(customerID);
     res.status(200).json({customer: customer});
   }catch(error){
     res.status(400).json({error: error.message});

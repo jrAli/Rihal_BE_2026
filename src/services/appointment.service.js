@@ -47,8 +47,6 @@ export const getBranchAppointmentsService = async (managerID) => {
 
   if (!manager) throw new Error("Manager not found!");
   
-  console.log("[Debug] Manager ID: ", manager.branchID);
-
   const appointment = await prisma.appointment.findMany({
     where: {branchID: manager.branchID},
     select: {

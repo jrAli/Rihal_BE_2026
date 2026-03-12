@@ -137,3 +137,24 @@ export const getCustomerService = async () => {
 
   return customer;
 };
+
+export const getCustomerByIDService = async (customerID) => {
+  
+
+  const customer = await prisma.customer.findFirst({
+    where: {id: customerID},
+    select: {
+      id: true, 
+      name: true,
+      username: true,
+      email: true, 
+      isActive: true, 
+      phone: true,
+      idImagePath: true,
+    },
+  });
+
+  if (!customer) throw Error("Failed to fetch customer");
+
+  return customer;
+};
