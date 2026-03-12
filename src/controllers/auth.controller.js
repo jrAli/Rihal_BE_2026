@@ -5,7 +5,7 @@ export const registerCustomer = async (req, res) => {
   try{
     const register = await registerCustomerService({
       ...req.body,
-      id_image: req.file?.path
+      id_image: req.file?.filename 
     });
     res.status(201).json(register);
 

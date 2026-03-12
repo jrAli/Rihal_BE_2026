@@ -327,7 +327,7 @@ export const changeAppointmentStatusService = async (userID, role, appointmentID
   });
 
   return {
-    message: "Successfully changed to status",
+    message: "Successfully changed to new status",
     newStatus: status 
   };
 };

@@ -39,7 +39,7 @@ export const bookAppointment = async (req, res) => {
   try{
     const {slotID} = req.body;
     const customerID = req.user.id;
-    const attachPath = req.file?.path; // optional file
+    const attachPath = req.file?.filename; // optional file
     const appointment = await bookAppointmentService(slotID, customerID, attachPath);
     res.json({booked: appointment}); 
   }catch(error){
