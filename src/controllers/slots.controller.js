@@ -1,13 +1,24 @@
-import {getSlotByParam} from '../services/slots.services.js';
+import { getSlotByParam, createSlotsService } from '../services/slots.services.js';
 
 export const listSlots = async (req, res) => {
   try{
     const {branchID, serviceTypeId, date} = req.query; // date is optional query parameter
     const slots = await getSlotByParam(branchID, serviceTypeId, date);
-    res.json({slots});
+    res.status(200).json({slots});
   }catch(error){
-    console.log("Error: Error in Slot controller!");
     res.status(500).json({error: error.message});
+  }
+};
+
+// Creates slots in single or bulk
+export const createSlots = async (req, res) => {
+  try{
+    const slotData  = req.body;
+    const { role, id } = req.user;
+    const createdSlots = await createSlotsService(slotData, id, role);
+    res.status(201).json({slots: createdSlots});
+  }catch(error){
+    res.status(400).json({error: error.message});
   }
 };
 

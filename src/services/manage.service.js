@@ -139,8 +139,6 @@ export const getCustomerService = async () => {
 };
 
 export const getCustomerByIDService = async (customerID) => {
-  
-
   const customer = await prisma.customer.findFirst({
     where: {id: customerID},
     select: {
@@ -157,4 +155,15 @@ export const getCustomerByIDService = async (customerID) => {
   if (!customer) throw Error("Failed to fetch customer");
 
   return customer;
+};
+
+// TODO complete it
+export const assignStaffService = async (userRole, staffID, serviceID, branchID) => {
+  if (userRole === 'ADMIN'){
+
+  }else if (userRole === 'BRANCH_MANAGER'){
+
+  }
+
+  return ;
 };

@@ -1,6 +1,6 @@
 import { viewAuditLogService, getImagePathService, 
          getAttachmentPathService, getStaffService, 
-         getCustomerService, getCustomerByIDService } from '../services/manage.service.js';
+         getCustomerService, getCustomerByIDService, assignStaffService } from '../services/manage.service.js';
 
 export const viewAuditLog = async (req, res) => {
   try{
@@ -65,6 +65,22 @@ export const getCustomerByID = async (req, res) => {
     const {customerID} = req.params;
     const customer = await getCustomerByIDService(customerID);
     res.status(200).json({customer: customer});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const assignStaff = async (req, res) => {
+  try{
+    const {staffID, serviceID, branchID} = req.body;
+
+    // check if input validation
+    if (!serviceID && !branchID) 
+      throw new Error("Must specific atleast one of the field eg. serviceID or/and branchID");
+
+    const { role, id: actorID, branchID: actorBranchID } = req.user
+    const assigned = await assignStaffService(userRole, staffID, serviceID, branchID);
+    res.status(200).json({assigned: assigned}); 
   }catch(error){
     res.status(400).json({error: error.message});
   }
