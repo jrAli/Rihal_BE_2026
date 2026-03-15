@@ -1,4 +1,4 @@
-import { getSlotByParam, createSlotsService } from '../services/slots.services.js';
+import { getSlotByParam, createSlotsService, updateSlotsService } from '../services/slots.services.js';
 
 export const listSlots = async (req, res) => {
   try{
@@ -22,4 +22,14 @@ export const createSlots = async (req, res) => {
   }
 };
 
-
+export const updateSlots = async (req, res) => {
+  try{
+    const {slotID} = req.params;
+    const {role, id} = req.user;
+    const slotData = req.body;
+    const updateSlots = await updateSlotsService(slotData, slotID, id, role);
+    res.status(200).json({updatedSlots: updateSlots})
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};

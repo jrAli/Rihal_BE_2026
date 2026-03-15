@@ -94,3 +94,68 @@ export const createSlotsService = async (slotData, userID, userRole) => {
   );
   return created;
 };
+
+export const updateSlotsService = async (slotData, slotID, userID, userRole) => {
+  // check if slot exist
+  const slot = await prisma.slot.findUnique({where: {id: slotID},});
+  if (!slot) throw new Error("Slot not found");
+  
+  const { serviceIDType, staffID: newStaffID, startTime, endTime } = slotData;
+
+  // check slot is not deleted (soft-deleted)
+  if (slot.deleteAt) throw new Error("Cannot updated deleted slot");
+
+  // check update scope based on role (ADMIN/MANAGER)
+    // get manger's branchID 
+  let userBranchID = null;
+  if (userRole === 'BRANCH_MANAGER'){
+    const manager  = await prisma.staff.findUnique({where: {id: userID}});
+    if (!manager ) throw new Error("Manager not found");
+    userBranchID = manager.branchID;
+  }
+
+  if (userRole === 'BRANCH_MANAGER' && slot.branchID !== userBranchID)
+    throw new Error("Managers can only update slots in their own branch");
+
+  // check if service belong to this branch
+  if (serviceIDType){
+    const serviceType = await prisma.serviceType.findUnique({where: {id: serviceIDType }});
+    if (!serviceType || serviceType.branchID !== slot.branchID)
+      throw new Error("Service type does not belong to this branch!");
+  }
+
+  // check if staff belong to same branch 
+  if (newStaffID){
+    const staff = await prisma.staff.findUnique({where: {id: newStaffID}});
+    if (!staff || staff.branchID !== slot.branchID)
+      throw new Error("Staff does not belong to this branch");
+    
+    // check for double checking
+    const conflict = await prisma.slot.findFirst({
+      where: {
+        staffID: newStaffID,
+        deleteAt: null,
+        id: {not: slotID},
+        AND: [
+          {startTime: {lt: new Date(endTime ?? slot.endTime)}},
+          {endTime: {gt: new Date(startTime ?? slot.startTime)}}
+        ]
+      }
+    });
+    if (conflict) throw new Error("Staff or slot is already scheduled this time");
+  }
+
+  const updated = await prisma.slot.update({
+    where: {id: slotID},
+    data: { // spread operator (...) only passes updated field
+      ...(serviceIDType && { serviceIDType }),
+      ...(startTime && { startTime: new Date(startTime) }),
+      ...(endTime && { endTime: new Date(endTime) }),
+      ...(slotData.staffID !== undefined && { staffID: slotData.staffID }),
+      ...(slotData.capacity && { capacity: slotData.capacity }),
+      ...(slotData.isAvailable !== undefined && { isAvailable: slotData.isAvailable }),
+    }
+  });
+
+  return updated; 
+};
