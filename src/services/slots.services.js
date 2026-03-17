@@ -1,4 +1,5 @@
 import prisma from '../db/prisma.js';
+import { logAudit } from '../utils/auditLog.js';
 
 export const getSlotByParam = async (branchID, serviceTypeId, date) => {
   // Validates required query param
@@ -92,6 +93,20 @@ export const createSlotsService = async (slotData, userID, userRole) => {
       }
     }))
   );
+
+  // log audit for each created slot
+  for (const slot of created) {
+    await logAudit(
+      userID,                                             // actorID
+      userRole,                                           // actorRole
+      'SLOT_CREATED',                                     // action
+      'SLOT',                                             // targetType
+      slot.id,                                            // targetID
+      slot.branchID,                                      // branchID
+      { serviceIDType: slot.serviceIDType, startTime: slot.startTime, endTime: slot.endTime }
+    );
+  }
+
   return created;
 };
 
@@ -157,15 +172,27 @@ export const updateSlotsService = async (slotData, slotID, userID, userRole) => 
     }
   });
 
+  // log audit
+  await logAudit(
+    userID,                      // actorID
+    userRole,                    // actorRole
+    'SLOT_UPDATED',              // action
+    'SLOT',                      // targetType
+    slotID,                      // targetID
+    slot.branchID,               // branchID
+    { updatedFields: slotData }  // metadata
+  );
+
+
   return updated; 
 };
 
 // soft delete slot 
-export const deleteSlotService = async (id) => {
+export const deleteSlotService = async (id, actorID, actorRole) => {
   // check if slot exist
   const slot = await prisma.slot.findUnique({
     where: {id: id},
-    select: {deleted_at : true},
+    select: {deleted_at : true, branchID: true},
   });
 
   if (!slot) throw new Error("Slot not found or wrong ID");
@@ -180,6 +207,17 @@ export const deleteSlotService = async (id) => {
       where: {id: id},
       data: {deleted_at: new Date()},
     });
+
+    // log audit — only log if actually deleted, not if already deleted
+    await logAudit(
+      actorID,          // actorID
+      actorRole,        // actorRole
+      'SLOT_DELETED',   // action
+      'SLOT',           // targetType
+      id,               // targetID
+      slot.branchID,    // branchID
+      null              // metadata
+    );
   }
 
   return deleteSlot;

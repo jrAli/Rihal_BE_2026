@@ -2,6 +2,8 @@ import prisma from '../db/prisma.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { parse } from 'json2csv';
+import { logAudit } from '../utils/auditLog.js';
+
 
 export const viewAuditLogService = async (userID, role) => {
   let auditLog = null;
@@ -198,7 +200,18 @@ export const assignStaffService = async (actorID, userRole, staffID, serviceID, 
         })
       }
       return output;
-    })
+    });
+
+    await logAudit(
+      actorID,
+      userRole,
+      'STAFF_ASSIGNED',
+      'STAFF',
+      staffID,
+      branchID,
+      { branchID, serviceID }
+    );
+
     return result;
     // Managers can only assign services in their own branch
   }else if (userRole === 'BRANCH_MANAGER'){
@@ -220,6 +233,18 @@ export const assignStaffService = async (actorID, userRole, staffID, serviceID, 
       data: [{staffID: staffID, ServiceTypeID: serviceID}],
       skipDuplicates: true, // avoid duplicates
     });
+
+    await logAudit(
+      actorID,
+      userRole,
+      'STAFF_ASSIGNED',
+      'STAFF',
+      staffID,
+      manager.branchID,
+      { serviceID }
+    );
+
+
     return {
       staff: await prisma.staff.findUnique({ 
         where: { id: staffID }, 
@@ -250,7 +275,7 @@ export const configSoftDeleteService = async (expiration_period) => {
   return configed;
 };
 
-export const cleanUpSlotsService = async () => {
+export const cleanUpSlotsService = async (actorID, actorRole) => {
   // fetch retention_period_days from config
   const config = await prisma.config.findUnique({
     where: {key: "retention_period_days"},
@@ -290,6 +315,17 @@ export const cleanUpSlotsService = async () => {
 
     return deleted;
   });
+
+  // log audit
+  await logAudit(
+    actorID,
+    actorRole,
+    'SLOT_HARD_DELETED',
+    'SLOT',
+    'bulk',
+    null,
+    { deletedCount: result.count, slotIDs: expiredSlotIDs }
+  );
 
   return {message: `Cleaned up ${result.count} expired slots`, deleted: result.count};
 };

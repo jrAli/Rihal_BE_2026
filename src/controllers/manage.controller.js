@@ -99,7 +99,8 @@ export const configSoftDelete = async (req, res) => {
 
 export const cleanUpSlots = async (req, res) => {
   try{
-    const cleaned = await cleanUpSlotsService();
+    const { id: actorID, role: actorRole } = req.user;  // for logging
+    const cleaned = await cleanUpSlotsService(actorID, actorRole);
     res.status(200).json({cleaned: cleaned}); 
   }catch(error){
     res.status(400).json({error: error.message});

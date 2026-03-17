@@ -1,4 +1,5 @@
 import prisma from '../db/prisma.js';
+import { logAudit } from '../utils/auditLog.js';
 
 // get all customer's appointment
 export const getCustomerAppointmentsService = async (cust_id) => {
@@ -213,9 +214,20 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
         slotID: slotInformation.id,
         staffID: slotInformation.staffID,
         status: "BOOKED"
-      }
+      }  
     });
-  
+    
+    // log 
+    await logAudit(
+      customerID,                          // actorID
+      'CUSTOMER',                          // actorRole
+      'APPOINTMENT_BOOKED',                // action
+      'APPOINTMENT',                       // targetType
+      appointmentBook.id,                  // targetID
+      slotInformation.branchID,            // branchID
+      { slotID: slotID }                   // metadata
+    );
+
     return appointmentBook;
   }catch(error){
     if (error.code === 'P2002') throw new Error('Slot is already booked'); // catch database error
@@ -237,6 +249,17 @@ export const cancelAppointmentsService  = async (userID, appointment_id) => {
     where: {id: appointment_id, customerID: userID},
     data: {status: "CANCELLED"},
   });
+
+  // log audit
+  await logAudit(
+    userID,                                // actorID
+    'CUSTOMER',                            // actorRole
+    'APPOINTMENT_CANCELLED',               // action
+    'APPOINTMENT',                         // targetType
+    appointment_id,                        // targetID
+    null,                                  // branchID — not stored on isAppointmentExist, pass null
+    { slotID: isAppointmentExist.slotID }  // metadata
+  );
 
   return {
     message: 'Appointment cancelled successfully',
@@ -279,6 +302,17 @@ export const rescheduleAppointmentsService = async (userID, appointmentID, newSl
       serviceTypeID: newSlot.serviceIDType,
     }
   });
+
+  // log audit
+  await logAudit(
+    userID,                                                  // actorID
+    'CUSTOMER',                                              // actorRole
+    'APPOINTMENT_RESCHEDULED',                               // action
+    'APPOINTMENT',                                           // targetType
+    appointmentID,                                           // targetID
+    newSlot.branchID,                                        // branchID
+    { oldSlotID: appointment.slotID, newSlotID: newSlotID }  // metadata
+  );
 
   return {
     message: 'Appointment rescheduled successfully!',

@@ -38,7 +38,8 @@ export const updateSlots = async (req, res) => {
 export const softDeleteSlots = async (req, res) => {
   try{
     const {slotID} = req.params;
-    const deletedSlot = await deleteSlotService(slotID); 
+    const {id: actorID, role: actorRole} = req.user; // will be used for logging
+    const deletedSlot = await deleteSlotService(slotID, actorID, actorRole); 
     res.status(200).json({deleteSlot: deletedSlot});
   }catch(error){
     res.status(400).json({error: error.message});
