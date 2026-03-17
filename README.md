@@ -104,31 +104,85 @@ Server runs at `http://localhost:[PORT]`
 
 ## API Usage
 
-Postman collection provided: 
-- import 
-- ...
-- ... (TODO LATER) 
+A Postman collection is provided — import `FlowCare.postman_collection.json` from the root of the repository.
 
-Public Endpoints
-  `Get /api/branches` -> List all branches
+### Authentication Flow
+1. Login via `POST /api/auth/login`
+2. Copy the token from the response
+3. In Postman, go to Authorization → select **Bearer Token** → paste the token
+4. All protected endpoints will now be authenticated
 
-Authentication
-  ...
+---
 
-Customer (Authenticated)
-  ...
+### Public Endpoints (No authentication required)
 
-Staff / Manager / Admin
-  ...
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/branches` | List all branches |
+| GET | `/api/branches/:id/services` | List services by branch |
+| GET | `/api/slots?branchID=&serviceTypeId=&date=` | List available slots |
 
-Manager / Admin
+---
 
-## File Storage
-- Customer ID Image (required at registeration, admin retrieval only)
-- Appointment Attachment (optional, restricted access)
-- Validate file type and size
+### Auth
 
-## Notes
-- Default admin user created on first run, check email for admin/staff login creditials 
-- ...
-- ...
+| Method | Endpoint | Description | Body (form-data) |
+|--------|----------|-------------|-----------------|
+| POST | `/api/auth/register` | Register customer | `name, email, username, password, phone, id_image (file)` |
+| POST | `/api/auth/login` | Login any user, returns JWT | `username, password` |
+
+---
+
+### Customer (Authenticated)
+
+| Method | Endpoint | Description | Body (form-data) |
+|--------|----------|-------------|-----------------|
+| GET | `/api/appointments` | List my appointments | — |
+| GET | `/api/appointments/:appt_id` | Get appointment details | — |
+| POST | `/api/appointments` | Book appointment | `slotID, attachments (optional file)` |
+| DELETE | `/api/appointments/:appt_id` | Cancel appointment | — |
+| PATCH | `/api/appointments/:appt_id/reschedule` | Reschedule appointment | `newSlotID` |
+
+---
+
+### Staff / Manager / Admin (Authenticated)
+
+| Method | Endpoint | Description | Body |
+|--------|----------|-------------|------|
+| GET | `/api/appointments` | List appointments (scoped by role) | — |
+| PATCH | `/api/appointments/:appt_id/status` | Update appointment status | `newStatus` |
+| GET | `/api/manage/audit-logs` | View audit logs (branch scoped) | — |
+
+---
+
+### Manager / Admin (Authenticated)
+
+| Method | Endpoint | Description | Body (JSON) |
+|--------|----------|-------------|------------|
+| GET | `/api/manage/staff` | List staff (scoped by role) | — |
+| GET | `/api/manage/customers` | List customers | — |
+| GET | `/api/manage/customers/:customerID` | Get customer details | — |
+| POST | `/api/slots` | Create slot (single or bulk) | `branchID, serviceIDType, startTime, endTime, capacity, staffID (optional)` |
+| PATCH | `/api/slots/:slotID` | Update slot | any slot fields |
+| DELETE | `/api/slots/:slotID` | Soft delete slot | — |
+| POST | `/api/manage/staff/assign` | Assign staff to service/branch | `staffID, serviceID, branchID (admin only)` |
+
+---
+
+### Admin Only
+
+| Method | Endpoint | Description | Body (JSON) |
+|--------|----------|-------------|------------|
+| PATCH | `/api/manage/config/retention` | Set soft-delete retention period | `days` |
+| DELETE | `/api/manage/slots/cleanup` | Hard delete expired slots | — |
+| GET | `/api/manage/audit-logs` | View all audit logs | — |
+| GET | `/api/manage/audit-logs/export` | Export audit logs as CSV | — |
+
+---
+
+### File Retrieval
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/manage/customers/:customerID/id-image` | Get customer ID image | Admin only |
+| GET | `/api/manage/appointments/:appointmentID/attachment` | Get appointment attachment | Staff, Manager, Admin, or appointment owner |
