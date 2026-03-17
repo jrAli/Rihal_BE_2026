@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { viewAuditLogService, getImagePathService, 
          getAttachmentPathService, getStaffService, configSoftDeleteService, cleanUpSlotsService,
-         getCustomerService, getCustomerByIDService, assignStaffService,  } from '../services/manage.service.js';
+         getCustomerService, getCustomerByIDService, assignStaffService, exportAuditService } from '../services/manage.service.js';
 
 export const viewAuditLog = async (req, res) => {
   try{
@@ -101,6 +101,17 @@ export const cleanUpSlots = async (req, res) => {
   try{
     const cleaned = await cleanUpSlotsService();
     res.status(200).json({cleaned: cleaned}); 
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const exportAudit = async (req, res) => {
+  try{
+    const csv = await exportAuditService();
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="audit-logs.csv"');
+    res.status(200).send(csv); 
   }catch(error){
     res.status(400).json({error: error.message});
   }

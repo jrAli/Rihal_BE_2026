@@ -1,6 +1,7 @@
 import prisma from '../db/prisma.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { parse } from 'json2csv';
 
 export const viewAuditLogService = async (userID, role) => {
   let auditLog = null;
@@ -291,4 +292,17 @@ export const cleanUpSlotsService = async () => {
   });
 
   return {message: `Cleaned up ${result.count} expired slots`, deleted: result.count};
+};
+
+// Service manually parse and create csv from audit logs
+export const exportAuditService = async () => {
+
+  const logs = await prisma.auditLog.findMany({
+    orderBy: {createdAt: 'desc'}, // get all audit log in descending order
+  });
+  
+  const fields = ['id', 'actorID', 'actorRole', 'action', 'targetType', 'targetID', 'branchID', 'createdAt', 'metadata'];
+  const csv = parse(logs, {fields});
+
+  return csv;
 };
