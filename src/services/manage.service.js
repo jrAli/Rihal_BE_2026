@@ -1,4 +1,3 @@
-import { Network } from 'inspector/promises';
 import prisma from '../db/prisma.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -248,4 +247,48 @@ export const configSoftDeleteService = async (expiration_period) => {
   });
   
   return configed;
+};
+
+export const cleanUpSlotsService = async () => {
+  // fetch retention_period_days from config
+  const config = await prisma.config.findUnique({
+    where: {key: "retention_period_days"},
+  });
+  if (!config) throw new Error("Retention period not configured, please set it first");
+  
+  const retentionDays = Number(config.value);
+  
+  // calculate cutoff date
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  // find expired slots
+  const expiredSlots = await prisma.slot.findMany({
+    where: {
+      deleted_at: {not: null, lte: cutoff},
+    },
+    select: {id: true},
+  });
+
+  if (expiredSlots.length === 0) return {message: "No expired slots to clean up", deleted: 0};
+
+  const expiredSlotIDs = expiredSlots.map(slot => slot.id);
+
+  // preform those transaction delete appointment first, then slot
+  const result = await prisma.$transaction(async (tx) => { // revert back if atleast one transaction process failed
+
+    // delete appointment tied to these slots
+    await tx.appointment.deleteMany({
+      where: {slotID: {in: expiredSlotIDs}},
+    });
+
+    // hard delete the slots
+    const deleted = await tx.slot.deleteMany({
+      where: {id: {in: expiredSlotIDs}},
+    });
+
+    return deleted;
+  });
+
+  return {message: `Cleaned up ${result.count} expired slots`, deleted: result.count};
 };
