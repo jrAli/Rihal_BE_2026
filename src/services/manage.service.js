@@ -1,4 +1,4 @@
-import { ADDRGETNETWORKPARAMS } from 'dns';
+import { Network } from 'inspector/promises';
 import prisma from '../db/prisma.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -230,4 +230,22 @@ export const assignStaffService = async (actorID, userRole, staffID, serviceID, 
       serviceAssignment: result,
     };
   }
+};
+
+export const configSoftDeleteService = async (expiration_period) => {
+  const days = Number(expiration_period); 
+
+  // check type must be integer
+  if (!Number.isInteger(days)) throw new Error("days must be nonnegative integer");
+
+  // check day not negative
+  if (days < 0) throw new Error("Invalid input days must be nonnegative integer");
+
+  const configed = await prisma.config.upsert({
+    where: {key: "retention_period_days"},
+    update: {value: String(days)},
+    create: {key: "retention_period_days", value: String(days)},
+  });
+  
+  return configed;
 };

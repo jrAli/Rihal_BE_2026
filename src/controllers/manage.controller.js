@@ -1,6 +1,7 @@
+import { config } from 'dotenv';
 import { viewAuditLogService, getImagePathService, 
-         getAttachmentPathService, getStaffService, 
-         getCustomerService, getCustomerByIDService, assignStaffService } from '../services/manage.service.js';
+         getAttachmentPathService, getStaffService, configSoftDeleteService,
+         getCustomerService, getCustomerByIDService, assignStaffService,  } from '../services/manage.service.js';
 
 export const viewAuditLog = async (req, res) => {
   try{
@@ -81,6 +82,16 @@ export const assignStaff = async (req, res) => {
 
     const assigned = await assignStaffService(actorID, userRole, staffID, serviceID, branchID);
     res.status(200).json({assigned: assigned}); 
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+};
+
+export const configSoftDelete = async (req, res) => {
+  try{
+    const expiration = req.body;
+    const configed = await configSoftDeleteService(expiration.days);
+    res.status(200).json({configed: configed}); 
   }catch(error){
     res.status(400).json({error: error.message});
   }
