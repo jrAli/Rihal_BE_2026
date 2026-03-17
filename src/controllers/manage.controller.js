@@ -73,13 +73,13 @@ export const getCustomerByID = async (req, res) => {
 export const assignStaff = async (req, res) => {
   try{
     const {staffID, serviceID, branchID} = req.body;
+    const { role: userRole, id: actorID } = req.user;
 
     // check if input validation
-    if (!serviceID && !branchID) 
-      throw new Error("Must specific atleast one of the field eg. serviceID or/and branchID");
+    if (!serviceID) throw new Error("serviceID is required");
+    if (!staffID) throw new Error("staffID is required"); 
 
-    const { role, id: actorID, branchID: actorBranchID } = req.user
-    const assigned = await assignStaffService(userRole, staffID, serviceID, branchID);
+    const assigned = await assignStaffService(actorID, userRole, staffID, serviceID, branchID);
     res.status(200).json({assigned: assigned}); 
   }catch(error){
     res.status(400).json({error: error.message});

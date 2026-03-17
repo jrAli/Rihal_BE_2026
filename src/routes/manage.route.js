@@ -3,7 +3,7 @@ import { authorize } from '../middlewares/authorize.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { viewAuditLog, viewCustomerIDImage, getCustomerByID,
          viewAttachement, listStaff, listCustomer,assignStaff } from '../controllers/manage.controller.js';
-
+import uploader from '../utils/uploader.js';
 const manageRouter = express.Router();
 
 manageRouter.get('/audit-logs', authenticate, authorize('ADMIN', 'BRANCH_MANAGER'), viewAuditLog);
@@ -12,10 +12,7 @@ manageRouter.get('/appointments/:appointmentID/attachment', authenticate, author
 manageRouter.get('/staff', authenticate, authorize('ADMIN', 'BRANCH_MANAGER'), listStaff);
 manageRouter.get('/customers', authenticate, authorize('ADMIN', 'BRANCH_MANAGER'), listCustomer);
 manageRouter.get('/customers/:customerID', authenticate, authorize('ADMIN', 'BRANCH_MANAGER'), getCustomerByID); 
-
-
-
-manageRouter.post('/staff/assign', authenticate, authorize('ADMIN', 'BRANCH_MANAGER'), assignStaff); // TODO implment this service!
+manageRouter.post('/staff/assign', authenticate, authorize('ADMIN', 'BRANCH_MANAGER'), uploader, assignStaff); 
 
 export default manageRouter;
 

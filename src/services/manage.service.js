@@ -1,3 +1,4 @@
+import { ADDRGETNETWORKPARAMS } from 'dns';
 import prisma from '../db/prisma.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -157,13 +158,76 @@ export const getCustomerByIDService = async (customerID) => {
   return customer;
 };
 
-// TODO complete it
-export const assignStaffService = async (userRole, staffID, serviceID, branchID) => {
+
+export const assignStaffService = async (actorID, userRole, staffID, serviceID, branchID) => {
+  // check if staff exist
+  const staff = await prisma.staff.findUnique({
+    where: {id: staffID},
+    select: {branchID: true},
+  });
+  if (!staff) throw new Error("Staff not found or invalid staff id");
+  
+  // check if service exist
+  const service = await prisma.serviceType.findUnique({where: {id: serviceID}, });
+  if (!service) throw new Error("Service not found");  
+  
   if (userRole === 'ADMIN'){
+    if (!branchID) throw new Error("BranchID is required");
 
+    // will rollout all the change if one of the transaction failed
+    const result = await prisma.$transaction(async (tx) => {
+      const output = {};
+
+      // Assign staff to branch, Assumption: Admin can change staff branch
+      if (branchID){
+        output.staff = await tx.staff.update({
+          where: {id: staffID}, 
+          data: {branchID: branchID},
+          select: { id: true, name: true, email: true, 
+                    role: true, branchID: true, 
+                    isActive: true, username: true 
+                  }
+        })
+      }
+
+      // Assign staff to service
+      if (serviceID) {
+        output.serviceAssignment = await tx.staffServiceType.createMany({
+          data: [{staffID: staffID, ServiceTypeID: serviceID}],
+          skipDuplicates: true, // no duplicates
+        })
+      }
+      return output;
+    })
+    return result;
+    // Managers can only assign services in their own branch
   }else if (userRole === 'BRANCH_MANAGER'){
+    // prevent managers from assign services in other branches
+    // if (branchID) throw new Error("Unauthorized: Branch Managers cannot assign staff to a branch");
 
+    // get actual user branch id based on id
+    const manager = await prisma.staff.findUnique({
+      where: {id: actorID},
+      select: {branchID: true},
+    });
+    
+    if (!manager?.branchID) throw new Error("Manager has no branch assigned");
+    if (staff.branchID !== manager.branchID) throw new Error("Staff does not belong to your branch");
+
+    if (service.branchID !== manager.branchID) throw new Error("Service does not belong to this branch");
+
+    const result = await prisma.staffServiceType.createMany({
+      data: [{staffID: staffID, ServiceTypeID: serviceID}],
+      skipDuplicates: true, // avoid duplicates
+    });
+    return {
+      staff: await prisma.staff.findUnique({ 
+        where: { id: staffID }, 
+        select: { id: true, name: true, email: true, 
+                  role: true, branchID: true, 
+                  isActive: true, username: true 
+                }}),
+      serviceAssignment: result,
+    };
   }
-
-  return ;
 };
