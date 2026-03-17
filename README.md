@@ -99,7 +99,7 @@ seeding rules:
 npm run dev
 ```
 
-Server runs at `http://localhost:[PORT]`
+Server runs at `http://localhost:3000` or `http://localhost:3001`
 
 
 ## API Usage
@@ -186,3 +186,24 @@ A Postman collection is provided — import `FlowCare.postman_collection.json` f
 |--------|----------|-------------|--------|
 | GET | `/api/manage/customers/:customerID/id-image` | Get customer ID image | Admin only |
 | GET | `/api/manage/appointments/:appointmentID/attachment` | Get appointment attachment | Staff, Manager, Admin, or appointment owner |
+
+## Postman Collection
+
+Import `FlowCare.postman_collection.json` from the root of the repository.
+
+Most endpoints use **form-data** in Postman. The only exception:
+
+- `POST /api/slots` — use **raw → JSON** for bulk slot creation:
+```json
+[
+  {
+    "branchID": "br_muscat_001",
+    "serviceIDType": "svc_mus_001",
+    "startTime": "2026-03-20T08:00:00.000Z",
+    "endTime": "2026-03-20T09:00:00.000Z",
+    "capacity": 1
+  }
+]
+```
+
+## Notes
