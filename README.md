@@ -80,6 +80,13 @@ Verify connection:
 npx prisma db pull
 ```
 
+Also run this
+
+```bash
+npx prisma generate
+npx prisma migrate deploy
+```
+
 ## Seeding
 Run this command to populate database 
 
