@@ -10,7 +10,7 @@ export const getSlotByParam = async (branchID, serviceTypeId, date) => {
     branchID: branchID,
     serviceIDType: serviceTypeId,
     isAvailable: true,
-    deleteAt: null
+    deleted_at : null
   };
 
   // Optional param
@@ -35,7 +35,7 @@ export const createSlotsService = async (slotData, userID, userRole) => {
   let userBranchID = null;
   if (userRole === 'BRANCH_MANAGER'){
     const manager  = await prisma.staff.findUnique({where: {id: userID}});
-    if (!manager ) throw new Error("Manager not found");
+    if (!manager) throw new Error("Manager not found");
     userBranchID = manager .branchID;
   }
 
@@ -67,7 +67,7 @@ export const createSlotsService = async (slotData, userID, userRole) => {
       const conflict = await prisma.slot.findFirst({
         where: {
           staffID,
-          deleteAt: null,
+          deleted_at : null,
           AND: [
             {startTime: {lt: new Date(slot.endTime)}},
             {endTime: {gt: new Date(slot.startTime)}}
@@ -103,7 +103,7 @@ export const updateSlotsService = async (slotData, slotID, userID, userRole) => 
   const { serviceIDType, staffID: newStaffID, startTime, endTime } = slotData;
 
   // check slot is not deleted (soft-deleted)
-  if (slot.deleteAt) throw new Error("Cannot updated deleted slot");
+  if (slot.deleted_at ) throw new Error("Cannot updated deleted slot");
 
   // check update scope based on role (ADMIN/MANAGER)
     // get manger's branchID 
@@ -134,7 +134,7 @@ export const updateSlotsService = async (slotData, slotID, userID, userRole) => 
     const conflict = await prisma.slot.findFirst({
       where: {
         staffID: newStaffID,
-        deleteAt: null,
+        deleted_at : null,
         id: {not: slotID},
         AND: [
           {startTime: {lt: new Date(endTime ?? slot.endTime)}},
@@ -158,4 +158,29 @@ export const updateSlotsService = async (slotData, slotID, userID, userRole) => 
   });
 
   return updated; 
+};
+
+// soft delete slot 
+export const deleteSlotService = async (id) => {
+  // check if slot exist
+  const slot = await prisma.slot.findUnique({
+    where: {id: id},
+    select: {deleted_at : true},
+  });
+
+  if (!slot) throw new Error("Slot not found or wrong ID");
+  
+  // check if deleted before (shouldn't return error and must be idopentent)
+  const deleted_at = slot.deleted_at ;
+  let deleteSlot = null;
+  if (deleted_at !== null){
+    deleteSlot ={message: "slot already deleted", id: id }; 
+  }else{
+    deleteSlot = await prisma.slot.update({
+      where: {id: id},
+      data: {deleted_at: new Date()},
+    });
+  }
+
+  return deleteSlot;
 };

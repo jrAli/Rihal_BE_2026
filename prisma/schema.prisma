@@ -70,7 +70,7 @@ model Slot {
   startTime     DateTime
   endTime       DateTime
   isAvailable   Boolean
-  deleteAt      DateTime?
+  deleted_at    DateTime?
   createdAt     DateTime     @default(now())
   capacity      Int          @default(1)
   appointment   Appointment[]

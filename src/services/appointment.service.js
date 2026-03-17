@@ -184,7 +184,7 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
       branchID: true, 
       serviceIDType: true,
       isAvailable: true,
-      deleteAt: true,
+      deleted_at: true,
       capacity: true,
     },
   });
@@ -193,7 +193,7 @@ export const bookAppointmentService = async (slotID, customerID, attachPath) => 
   if (!slotInformation) throw new Error("Slot not found!");
 
   // Check if slot is available 
-  if (slotInformation.deleteAt) throw new Error("slot not available!");
+  if (slotInformation.deleted_at) throw new Error("slot not available!");
   if (!slotInformation.isAvailable) throw new Error("Slot not available!");
 
   const appointmentCount = await prisma.appointment.count({
@@ -260,7 +260,7 @@ export const rescheduleAppointmentsService = async (userID, appointmentID, newSl
 
   // check if slot is not deleted (soft deleted)
   if (!newSlot) throw new Error("Slot not found");
-  if (newSlot.deleteAt) throw new Error("Slot not available");
+  if (newSlot.deleted_at) throw new Error("Slot not available");
 
   // check slot capacity
   const appointmentCount  = await prisma.appointment.count({
