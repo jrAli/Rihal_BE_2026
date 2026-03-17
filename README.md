@@ -16,15 +16,34 @@ This backend API handles:
 
 ## Table of Contents
 1. [Setup](#setup)
-2. [Environment Variables](#environment-variables)
-3. [Database Migrations](#database-migrations)
-4. [Seeding](#seeding)
-5. [Running the Server](#running-the-server)
-6. [API Usage](#api-usage)
-7. [File Storage](#file-storage)
-8. [Notes](#notes)
+2. [Prerequisites](#Prerequisites)
+3. [Environment Variables](#environment-variables)
+4. [Database Migrations](#database-migrations)
+5. [Seeding](#seeding)
+6. [Running the Server](#running-the-server)
+7. [API Usage](#api-usage)
+8. [File Storage](#file-storage)
+9. [Notes](#notes)
 
 ---
+
+## Prerequisites
+
+Before running this project, ensure you have the following installed:
+
+- **Node.js** (v18 or later recommended)
+- **npm** (comes with Node.js)
+- **PostgreSQL** (v14 or later recommended)
+- Optional: Postman (for testing API endpoints)
+- Optional: Git (for cloning the repository)
+
+Tech stack used:
+
+- **Backend:** Node.js + Express.js
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+- **Authentication:** JWT
+- **File uploads:** Multer
 
 ## Setup
 
@@ -39,12 +58,12 @@ npm install
 ## Environment Variables
 
 Create a `.env` file using `.env.example` as a template
-note. .env sent via email
+note. `.env` sent via email
 
 ```.env 
-DATABASE_URL=
-JWT_SECRET=
-PORT=
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+JWT_SECRET=your_jwt_secret
+PORT=3000
 ```
 
 ## Database Migrations
