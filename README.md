@@ -208,4 +208,4 @@ Most endpoints use **form-data** in Postman. The only exception:
 
 ## Notes
 
-JWT token are sent via email
+JWT secret is sent via email
