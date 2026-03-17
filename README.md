@@ -207,5 +207,6 @@ Most endpoints use **form-data** in Postman. The only exception:
 ```
 
 ## Notes
-
-JWT secret is sent via email
+- Default admin user is created on first run. Credentials provided in the submission email.
+- JWT tokens in the Postman collection are expired — login first to get a fresh token, then update the Bearer Token in each request.
+- Postman collection is included in the root of the repository: `FlowCare.postman_collection.json`. Import it into Postman to test all endpoints.
