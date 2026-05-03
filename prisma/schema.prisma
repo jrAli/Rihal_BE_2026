@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model staffServiceType {
+  id            String      @id @default(uuid())
+  staffID       String
+  ServiceTypeID String
+  assignedAt    DateTime    @default(now())
+  serviceType   ServiceType @relation(fields: [ServiceTypeID], references: [id])
+  staff         Staff       @relation(fields: [staffID], references: [id])
+
+  @@unique([staffID, ServiceTypeID])
+}
+
+model config {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+}
+
+model Appointment {
+  id            String      @id @default(uuid())
+  customerID    String
+  staffID       String?
+  slotID        String      
+  status        String
+  notes         String?
+  createdAt     DateTime    @default(now())
+  branchID      String
+  attachPath    String?
+  updatedAt     DateTime    @updatedAt
+  serviceTypeID String
+  branch        Branch      @relation(fields: [branchID], references: [id])
+  customer      Customer    @relation(fields: [customerID], references: [id])
+  serviceType   ServiceType @relation(fields: [serviceTypeID], references: [id])
+  slot          Slot        @relation(fields: [slotID], references: [id])
+  staff         Staff?      @relation(fields: [staffID], references: [id])
+}
+
+model ServiceType {
+  id                String             @id @default(uuid())
+  name              String
+  branchID          String
+  createdAt         DateTime           @default(now())
+  description       String
+  durationMin       Int
+  isActive          Boolean
+  appointments      Appointment[]
+  branch            Branch             @relation(fields: [branchID], references: [id])
+  slots             Slot[]
+  staffServiceTypes staffServiceType[]
+}
+
+model Slot {
+  id            String       @id @default(uuid())
+  branchID      String
+  serviceIDType String
+  staffID       String?
+  startTime     DateTime
+  endTime       DateTime
+  isAvailable   Boolean
+  deleted_at    DateTime?
+  createdAt     DateTime     @default(now())
+  capacity      Int          @default(1)
+  appointment   Appointment[]
+  branch        Branch       @relation(fields: [branchID], references: [id])
+  serviceType   ServiceType  @relation(fields: [serviceIDType], references: [id])
+  staff         Staff?       @relation(fields: [staffID], references: [id])
+}
+
+model Customer {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  idImagePath  String
+  createdAt    DateTime      @default(now())
+  isActive     Boolean       @default(true)
+  phone        String
+  username     String        @unique
+  role         String        @default("CUSTOMER")
+  appointments Appointment[]
+}
+
+model Staff {
+  id               String             @id @default(uuid())
+  name             String
+  email            String             @unique
+  password         String
+  role             String
+  branchID         String?
+  isActive         Boolean
+  username         String             @unique
+  appointments     Appointment[]
+  slots            Slot[]
+  branch           Branch?            @relation(fields: [branchID], references: [id])
+  staffServiceType staffServiceType[]
+}
+
+model Branch {
+  id           String        @id @default(uuid())
+  name         String
+  createdAt    DateTime      @default(now())
+  address      String
+  city         String
+  isActive     Boolean
+  timezone     String
+  appointments Appointment[]
+  auditLogs    AuditLog[]
+  serviceType  ServiceType[]
+  slots        Slot[]
+  staff        Staff[]
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorID    String
+  actorRole  String
+  action     String
+  targetType String
+  targetID   String
+  branchID   String?
+  createdAt  DateTime @default(now())
+  metadata   Json?
+  branch     Branch?  @relation(fields: [branchID], references: [id])
+}

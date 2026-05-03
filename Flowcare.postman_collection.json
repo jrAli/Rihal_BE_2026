@@ -1,0 +1,1520 @@
+{
+  "info": {
+    "_postman_id": "09451652-a58a-4434-93de-5e09495dfcc1",
+    "name": "Flowcare",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46819948"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "bearer"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "fatima.z@example.com",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "password",
+                  "value": "Customer@123",
+                  "type": "text",
+                  "id": 1
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/auth/login?=",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "full_name",
+                  "value": "Ahmed Ali Alismaily",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "password",
+                  "value": "Secret@123",
+                  "type": "text",
+                  "id": 1
+                },
+                {
+                  "key": "email",
+                  "value": "ahmed@example.com",
+                  "type": "text",
+                  "id": 2
+                },
+                {
+                  "key": "phone",
+                  "value": "+96890015154",
+                  "type": "text",
+                  "id": 3
+                },
+                {
+                  "key": "username",
+                  "value": "cust_ahmed001",
+                  "type": "text",
+                  "id": 4
+                },
+                {
+                  "key": "id_image",
+                  "type": "file",
+                  "id": 5,
+                  "fileUploadError": "",
+                  "src": [
+                    "c:\\Users\\mazen\\Pictures\\Screenshots\\Screenshot 2025-06-17 200059.png"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/auth/register",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "id": 0,
+                  "sortOrder": 0,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Public API",
+      "item": [
+        {
+          "name": "Get All available slots with query param",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/slots?branchID=br_muscat_001&serviceTypeId=svc_mus_001",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots"
+              ],
+              "query": [
+                {
+                  "key": "branchID",
+                  "value": "br_muscat_001",
+                  "id": 0
+                },
+                {
+                  "key": "serviceTypeId",
+                  "value": "svc_mus_001",
+                  "id": 1
+                },
+                {
+                  "key": "date",
+                  "value": null,
+                  "id": 2,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Services by branchID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/branches/br_muscat_001/services",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "branches",
+                "br_muscat_001",
+                "services"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-03-06T16:11:50.508Z",
+                  "id": 2,
+                  "sortOrder": 0,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All branches",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/branches",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "branches"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-03-06T16:11:50.508Z",
+                  "id": 2,
+                  "sortOrder": 0,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer (Protected)",
+      "item": [
+        {
+          "name": "Delete appointment by ID ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9jdXN0XzAwMiIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzIzOTk0MSwiZXhwIjoxNzczODQ0NzQxfQ.pTewqhh6-fN0Fv1MYqya-i4LAqRmHLqBh5j415zqxpo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/appointments/0e4a2c3f-9c4b-4ef1-abd6-c2480d1ae1b8",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                "0e4a2c3f-9c4b-4ef1-abd6-c2480d1ae1b8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reschedule appointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9jdXN0XzAwMiIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzIzOTk0MSwiZXhwIjoxNzczODQ0NzQxfQ.pTewqhh6-fN0Fv1MYqya-i4LAqRmHLqBh5j415zqxpo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "newSlotID",
+                  "value": "39bdbf81-124a-4f08-8ef5-675e71310903",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/appt_002/reschedule",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                "appt_002",
+                "reschedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Book Appointment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9jdXN0XzAwMiIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzIzOTk0MSwiZXhwIjoxNzczODQ0NzQxfQ.pTewqhh6-fN0Fv1MYqya-i4LAqRmHLqBh5j415zqxpo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "slotID",
+                  "value": "slot_mus_001",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "attachments",
+                  "value": "",
+                  "type": "file",
+                  "id": 1,
+                  "fileUploadError": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Appointment by appointmentID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9jdXN0XzAwMiIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzIzOTk0MSwiZXhwIjoxNzczODQ0NzQxfQ.pTewqhh6-fN0Fv1MYqya-i4LAqRmHLqBh5j415zqxpo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/appt_002",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                "appt_002"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Appointment",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9jdXN0XzAwMiIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzIzOTk0MSwiZXhwIjoxNzczODQ0NzQxfQ.pTewqhh6-fN0Fv1MYqya-i4LAqRmHLqBh5j415zqxpo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Slots",
+      "item": [
+        {
+          "name": "Update Slots (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "branchID",
+                  "value": "br_suhar_001",
+                  "type": "text",
+                  "id": 0,
+                  "disabled": true
+                },
+                {
+                  "key": "serviceIDType",
+                  "value": "svc_mus_001",
+                  "type": "text",
+                  "id": 1,
+                  "disabled": true
+                },
+                {
+                  "key": "startTime",
+                  "value": "2026-03-20T09:00:00.000Z",
+                  "type": "text",
+                  "id": 2,
+                  "disabled": true
+                },
+                {
+                  "key": "endTime",
+                  "value": "2026-03-20T09:15:00.000Z",
+                  "type": "text",
+                  "id": 3,
+                  "disabled": true
+                },
+                {
+                  "key": "staffID",
+                  "value": "usr_staff_002",
+                  "type": "text",
+                  "id": 4
+                },
+                {
+                  "key": "capacity",
+                  "value": "1",
+                  "type": "text",
+                  "id": 5,
+                  "disabled": true
+                }
+              ],
+              "options": {
+                "formdata": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/slots/c6ef5c81-67fc-44ba-b0c0-74022cb604c5",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots",
+                "c6ef5c81-67fc-44ba-b0c0-74022cb604c5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Slots in single (Manager)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAxIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUyMzg0LCJleHAiOjE3NzM4NTcxODR9.JMvmtEOLKw_-JeBFP_aahNw785484Xwl4Db3z7pXf0c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "branchID",
+                  "value": "br_muscat_001",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "serviceIDType",
+                  "value": "svc_mus_001",
+                  "type": "text",
+                  "id": 1
+                },
+                {
+                  "key": "startTime",
+                  "value": "2026-03-20T09:00:00.000Z",
+                  "type": "text",
+                  "id": 2
+                },
+                {
+                  "key": "endTime",
+                  "value": "2026-03-20T09:15:00.000Z",
+                  "type": "text",
+                  "id": 3
+                },
+                {
+                  "key": "staffID",
+                  "value": "usr_staff_001",
+                  "type": "text",
+                  "id": 4
+                }
+              ],
+              "options": {
+                "formdata": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/slots",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Slots (Manager)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAxIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUyMzg0LCJleHAiOjE3NzM4NTcxODR9.JMvmtEOLKw_-JeBFP_aahNw785484Xwl4Db3z7pXf0c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "branchID",
+                  "value": "br_muscat_001",
+                  "type": "text",
+                  "id": 0,
+                  "disabled": true
+                },
+                {
+                  "key": "serviceIDType",
+                  "value": "svc_mus_001",
+                  "type": "text",
+                  "id": 1,
+                  "disabled": true
+                },
+                {
+                  "key": "startTime",
+                  "value": "2026-03-20T09:00:00.000Z",
+                  "type": "text",
+                  "id": 2,
+                  "disabled": true
+                },
+                {
+                  "key": "endTime",
+                  "value": "2026-03-20T09:15:00.000Z",
+                  "type": "text",
+                  "id": 3,
+                  "disabled": true
+                },
+                {
+                  "key": "staffID",
+                  "value": "usr_staff_001",
+                  "type": "text",
+                  "id": 4
+                },
+                {
+                  "key": "capacity",
+                  "value": "1",
+                  "type": "text",
+                  "id": 5,
+                  "disabled": true
+                }
+              ],
+              "options": {
+                "formdata": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/slots/slot_mus_001",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots",
+                "slot_mus_001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Slots in bulk (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n  {\r\n    \"branchID\": \"br_muscat_001\",\r\n    \"serviceIDType\": \"svc_mus_001\",\r\n    \"startTime\": \"2026-03-20T09:00:00.000Z\",\r\n    \"endTime\": \"2026-03-20T09:15:00.000Z\",\r\n    \"staffID\": \"usr_staff_001\"\r\n  },\r\n  {\r\n    \"branchID\": \"br_muscat_001\",\r\n    \"serviceIDType\": \"svc_mus_002\",\r\n    \"startTime\": \"2026-03-20T10:00:00.000Z\",\r\n    \"endTime\": \"2026-03-20T10:20:00.000Z\",\r\n    \"staffID\": \"usr_staff_001\"\r\n  },\r\n  {\r\n    \"branchID\": \"br_muscat_001\",\r\n    \"serviceIDType\": \"svc_mus_003\",\r\n    \"startTime\": \"2026-03-20T11:00:00.000Z\",\r\n    \"endTime\": \"2026-03-20T11:30:00.000Z\",\r\n    \"staffID\": \"usr_staff_002\"\r\n  }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/slots",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Soft delete slots (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/slots/39bdbf81-124a-4f08-8ef5-675e71310903",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots",
+                "39bdbf81-124a-4f08-8ef5-675e71310903"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Create Slots in bulk (Manager)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAyIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUzMjczLCJleHAiOjE3NzM4NTgwNzN9.q9bufpwQmALqf16gXYBTCtVwAoDWALtyhaKwmE57Ig4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n  {\r\n    \"branchID\": \"br_muscat_001\",\r\n    \"serviceIDType\": \"svc_mus_001\",\r\n    \"startTime\": \"2026-03-20T09:00:00.000Z\",\r\n    \"endTime\": \"2026-03-20T09:15:00.000Z\",\r\n    \"staffID\": \"usr_staff_001\"\r\n  },\r\n  {\r\n    \"branchID\": \"br_muscat_001\",\r\n    \"serviceIDType\": \"svc_mus_002\",\r\n    \"startTime\": \"2026-03-20T10:00:00.000Z\",\r\n    \"endTime\": \"2026-03-20T10:20:00.000Z\",\r\n    \"staffID\": \"usr_staff_001\"\r\n  },\r\n  {\r\n    \"branchID\": \"br_muscat_001\",\r\n    \"serviceIDType\": \"svc_mus_003\",\r\n    \"startTime\": \"2026-03-20T11:00:00.000Z\",\r\n    \"endTime\": \"2026-03-20T11:30:00.000Z\",\r\n    \"staffID\": \"usr_staff_002\"\r\n  }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/slots",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Slots in single (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "branchID",
+                  "value": "br_suhar_001",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "serviceIDType",
+                  "value": "svc_suh_001",
+                  "type": "text",
+                  "id": 1
+                },
+                {
+                  "key": "startTime",
+                  "value": "2026-03-25T09:00:00.000Z",
+                  "type": "text",
+                  "id": 2
+                },
+                {
+                  "key": "endTime",
+                  "value": "2026-03-25T09:15:00.000Z",
+                  "type": "text",
+                  "id": 3
+                },
+                {
+                  "key": "staffID",
+                  "value": "usr_staff_003",
+                  "type": "text",
+                  "id": 4,
+                  "disabled": true
+                },
+                {
+                  "key": "capacity",
+                  "value": "",
+                  "type": "text",
+                  "id": 5,
+                  "disabled": true
+                }
+              ],
+              "options": {
+                "formdata": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/slots",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "slots"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Management (Staff/Admin/Manager)",
+      "item": [
+        {
+          "name": "Change appointment Status [\"CHECK_IN\", \"NO_SHOW\", \"COMPLETED\"] Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "newStatus",
+                  "value": "NO_SHOW",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/d6560f33-e830-4b3d-af14-5f002a15cf0f/status",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                "d6560f33-e830-4b3d-af14-5f002a15cf0f",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change appointment Status Manager",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAxIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUyMzg0LCJleHAiOjE3NzM4NTcxODR9.JMvmtEOLKw_-JeBFP_aahNw785484Xwl4Db3z7pXf0c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "newStatus",
+                  "value": "CHECK_IN",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/appt_002/status",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                "appt_002",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List all appointment assigned to (Staff)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9zdGFmZl8wMDEiLCJyb2xlIjoiU1RBRkYiLCJpYXQiOjE3NzMyNTQ0NDksImV4cCI6MTc3Mzg1OTI0OX0.AgieuArFAtuNDRJ3Pz48Y3HkQ423w3X1UnpFkQDS8fA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/appointments",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All appointments based on branch (Branch Managers)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAxIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUyMzg0LCJleHAiOjE3NzM4NTcxODR9.JMvmtEOLKw_-JeBFP_aahNw785484Xwl4Db3z7pXf0c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/appointments",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "view Audit logs (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/audit-logs",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "audit-logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer ID image (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/customers/df8eaf70-14e9-4fdf-a6a4-6176c78c5a3e/id-image",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "customers",
+                "df8eaf70-14e9-4fdf-a6a4-6176c78c5a3e",
+                "id-image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign staff to service/branch (Manager)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAyIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUzMjczLCJleHAiOjE3NzM4NTgwNzN9.q9bufpwQmALqf16gXYBTCtVwAoDWALtyhaKwmE57Ig4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "staffID",
+                  "value": "usr_staff_003",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "serviceID",
+                  "value": "svc_suh_002",
+                  "type": "text",
+                  "id": 1
+                },
+                {
+                  "key": "branchID",
+                  "value": "br_muscat_001",
+                  "type": "text",
+                  "id": 2
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/manage/staff/assign",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "staff",
+                "assign"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Attachment file (Admin, Customer, Staff, Author Customer)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9jdXN0XzAwMiIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzIzOTk0MSwiZXhwIjoxNzczODQ0NzQxfQ.pTewqhh6-fN0Fv1MYqya-i4LAqRmHLqBh5j415zqxpo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/appointments/56c0a847-9277-4475-b50a-e6b45f729c0c/attachment",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "appointments",
+                "56c0a847-9277-4475-b50a-e6b45f729c0c",
+                "attachment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Configure soft-delete retention period (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "days",
+                  "value": "0",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/manage/config/retention",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "config",
+                "retention"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "id": 0,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign staff to service/branch (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "staffID",
+                  "value": "usr_staff_004",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "serviceID",
+                  "value": "svc_suh_002",
+                  "type": "text",
+                  "id": 1
+                },
+                {
+                  "key": "branchID",
+                  "value": "br_muscat_001",
+                  "type": "text",
+                  "id": 2
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/manage/staff/assign",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "staff",
+                "assign"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change appointment Status Staff",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAxIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUyMzg0LCJleHAiOjE3NzM4NTcxODR9.JMvmtEOLKw_-JeBFP_aahNw785484Xwl4Db3z7pXf0c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "newStatus",
+                  "value": "CHECK_IN",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            },
+            "url": {
+              "raw": "localhost:3000/api/appointments/appt_002/status",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments",
+                "appt_002",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All staff (Admin All) and (Manager Some)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/staff",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "staff"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export audit logs as CSV (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/audit-logs/export",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "audit-logs",
+                "export"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Customer (Admin & Mangers)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/customers",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer and ID (Admin & Managers)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/customers/usr_cust_001",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "customers",
+                "usr_cust_001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "view Audit logs (Manager)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9tZ3JfMDAxIiwicm9sZSI6IkJSQU5DSF9NQU5BR0VSIiwiaWF0IjoxNzczMjUyMzg0LCJleHAiOjE3NzM4NTcxODR9.JMvmtEOLKw_-JeBFP_aahNw785484Xwl4Db3z7pXf0c",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/audit-logs",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "audit-logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hard delete expired soft-deleted slots (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/manage/slots/cleanup",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "manage",
+                "slots",
+                "cleanup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List all appointment based on role (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzcl9hZG1pbl8wMDEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzMyNTEzODIsImV4cCI6MTc3Mzg1NjE4Mn0.4d6vHM5iLE6aRhGU2pTu44htUszYkOR6Fgn7Rl_j9IM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/appointments",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
