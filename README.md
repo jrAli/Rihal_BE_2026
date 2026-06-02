@@ -18,12 +18,13 @@ This backend API handles:
 1. [Setup](#setup)
 2. [Prerequisites](#Prerequisites)
 3. [Environment Variables](#environment-variables)
-4. [Database Migrations](#database-migrations)
-5. [Seeding](#seeding)
-6. [Running the Server](#running-the-server)
-7. [API Usage](#api-usage)
-8. [File Storage](#file-storage)
-9. [Notes](#notes)
+4. [Docker Setup](#docker-setup)
+5. [Database Migrations](#database-migrations)
+6. [Seeding](#seeding)
+7. [Running the Server](#running-the-server)
+8. [API Usage](#api-usage)
+9. [File Storage](#file-storage)
+10. [Notes](#notes)
 
 ---
 
@@ -65,6 +66,121 @@ DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
 JWT_SECRET=your_jwt_secret
 PORT=3000
 ```
+
+---
+
+## Docker Setup
+
+> **Recommended for first-time users.** Docker handles PostgreSQL and the Node.js server together — no need to install them separately.
+
+### Prerequisites
+
+Before starting, ensure you have the following installed:
+
+- **Docker** (v20 or later) — [Download Docker](https://www.docker.com/products/docker-desktop)
+- **Docker Compose** (included with Docker Desktop)
+
+Verify your installation:
+
+```bash
+docker --version
+docker compose version
+```
+
+---
+
+### Step 1 — Clone the Repository
+
+```bash
+git clone https://github.com/jrAli/Rihal_BE_2026.git
+cd Rihal_BE_2026
+```
+
+---
+
+### Step 2 — Configure Environment Variables
+
+Create a `.env` file in the project root (use `.env.example` as a template):
+
+```.env
+DATABASE_URL=postgresql://flowcare:flowcare@db:5432/flowcare
+JWT_SECRET=your_jwt_secret
+PORT=3000
+```
+
+> **Note:** When using Docker, the `DATABASE_URL` host must be `db` (the service name defined in `docker-compose.yml`), not `localhost`.
+
+---
+
+### Step 3 — Build and Start Containers
+
+Run the following command to build and start both the API and database containers:
+
+```bash
+docker compose up --build
+```
+
+This will:
+- Pull the PostgreSQL image and start the database
+- Build the Node.js API image
+- Start the server at `http://localhost:3000`
+
+To run in **detached mode** (background):
+
+```bash
+docker compose up --build -d
+```
+
+---
+
+### Step 4 — Run Migrations
+
+Once the containers are running, apply the database migrations:
+
+```bash
+docker compose exec app npx prisma migrate deploy
+docker compose exec app npx prisma generate
+```
+
+---
+
+### Step 5 — Seed the Database
+
+Populate the database with initial data:
+
+```bash
+docker compose exec app node prisma/seed.js
+```
+
+---
+
+### Stopping the Containers
+
+```bash
+docker compose down
+```
+
+To stop **and remove all data** (including the database volume):
+
+```bash
+docker compose down -v
+```
+
+---
+
+### Useful Docker Commands
+
+| Command | Description |
+|---------|-------------|
+| `docker compose up --build` | Build and start all services |
+| `docker compose up -d` | Start in detached (background) mode |
+| `docker compose down` | Stop and remove containers |
+| `docker compose down -v` | Stop and remove containers + volumes |
+| `docker compose logs -f app` | Stream API server logs |
+| `docker compose exec app bash` | Open a shell inside the API container |
+| `docker compose exec db psql -U flowcare` | Open a PostgreSQL shell |
+
+---
 
 ## Database Migrations
 

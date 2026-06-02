@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: flowcare
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:admin123@db:5432/flowcare
+    
+    depends_on:
+      - db
+    command: sh -c "npx prisma migrate deploy && node prisma/seed.js && npm run dev"
